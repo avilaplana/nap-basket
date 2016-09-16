@@ -1,7 +1,5 @@
-package com.netaporter.main
+package com.netaporter.domain
 
-import com.netaporter.domain.Product
-import com.netaporter.service.Inventory
 import org.scalatest.{Matchers, WordSpec}
 
 class InventorySpec extends WordSpec with Matchers {
@@ -9,7 +7,7 @@ class InventorySpec extends WordSpec with Matchers {
   "Inventory" should {
     "be created from a csv file" in {
       val inventory = Inventory("/items.csv")
-      inventory.products shouldBe Set(
+      inventory.products shouldBe Seq(
         Product("1", "Short Sleeve Jumper", 9.99D),
         Product("2", "Shoulder Bag", 9.99D),
         Product("3", "Skinny Jeans", 45.00),

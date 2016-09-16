@@ -1,8 +1,7 @@
 package com.netaporter.main
 
 import com.netaporter.domain.Basket._
-import com.netaporter.domain.{ProductNotFound, ProductNotValid}
-import com.netaporter.service.Inventory
+import com.netaporter.domain.{Inventory, ProductNotFound, ProductNotValid}
 
 
 object Application extends App {
@@ -17,7 +16,7 @@ object Application extends App {
   println("Enter \"total\" to show the total price of the basket")
 
   val inventory = Inventory("/items.csv")
-  implicit val exist = inventory.exist _
+  implicit val find = inventory.find _
 
   var basket = emptyBasket
 
@@ -25,18 +24,22 @@ object Application extends App {
   input foreach {
     case "add" :: productId :: Nil =>
       basket.add(productId) match {
-        case Right(b) => basket = b
-        case Left(ProductNotValid) => println(s"Product with id: $productId does not exist")
+        case Right(b) =>
+          basket = b
+          println(basket)
+        case Left(_) => println(s"Product with id: $productId does not exist")
       }
-      println(s"the basket is $basket")
+
     case "remove" :: productId :: Nil =>
       basket.remove(productId) match {
-        case Right(b) => basket = b
+        case Right(b) =>
+          basket = b
+          println(basket)
         case Left(ProductNotValid) => println(s"Product with id: $productId does not exist")
         case Left(ProductNotFound) => println(s"Product with id: $productId is not found in the basket")
       }
     case "list" :: Nil =>
-      println(inventory.products)
+      println(inventory)
     case "total" :: Nil =>
       println(basket.total)
     case _ =>

@@ -1,12 +1,13 @@
-package com.netaporter.service
-
-import com.netaporter.domain.Product
+package com.netaporter.domain
 
 import scala.io.Source._
 import scala.util.matching.Regex
 
-class Inventory(val products: Set[Product] = Set.empty[Product]) {
-  def exist(id: String) = products.find(_.productId == id)
+case class Inventory(val products: Seq[Product] = Seq.empty[Product]) {
+
+  def find(id: String) = products.find(_.productId == id)
+
+  override def toString = "Inventory:\n" + products.map { p => s"$p" }.mkString("\n")
 }
 
 
@@ -19,11 +20,11 @@ object Inventory {
 
     val products = productsAsString.tail.map {
       l => productRegEx findFirstMatchIn l map {
-        m => Product(m.group("productId"), m.group("productName").trim, m.group("price").toDouble)
+        m => Product(m.group("productId"), m.group("productName").trim, BigDecimal(m.group("price")))
       }
-    }.flatten.toSet
+    }.flatten
 
 
-    new Inventory(products)
+    Inventory(products)
   }
 }
